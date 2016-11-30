@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<script>
+const b = new Blob([
+  'onmessage = function(e) {',
+      'var request = new XMLHttpRequest();',
+      'request.open("GET", e.data);',
+      'request.onreadystatechange = function() {',
+        'if (request.readyState == 4) postMessage(request.responseText);',
+      '};',
+      'request.send();',
+/*    'fetch(e.data).',
+      'then(r => r.text()).',
+      'then(t => postMessage(t)).',
+      'catch(err => postMessage("ERR: " + err));',*/
+  '};'
+]);
+const url = URL.createObjectURL(b);
+const worker = new Worker(url);
+worker.onmessage = function(e) {
+console.log(e);
+  parent.postMessage(e.data, '*');
+};
+const b2 = new Blob(['from page']);
+const url2 = URL.createObjectURL(b2);
+worker.postMessage(url2);
+</script>

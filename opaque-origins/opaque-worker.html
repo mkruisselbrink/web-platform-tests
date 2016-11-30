@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<script src="../resources/testharness.js"></script>
+<!--<script src="/resources/testharnessreport.js"></script>-->
+<body>
+<script>
+async_test(function(t) {
+    self.onmessage = t.step_func(function(e) {
+        assert_equals(e.data, 'from page');
+        t.done();
+      });
+  }, 'A worker is same origin with its opaque origin creator');
+</script>
+<iframe sandbox="allow-scripts" src="resources/sandboxed.html"></iframe>
+</body>
