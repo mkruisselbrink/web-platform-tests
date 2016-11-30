@@ -5,11 +5,22 @@
 <body>
 <script>
 async_test(function(t) {
-    self.onmessage = t.step_func(function(e) {
-        assert_equals(e.data, 'from page');
-        t.done();
-      });
+    self.addEventListener('message', t.step_func(function(e) {
+        if (e.source == window[0]) {
+          assert_equals(e.data, 'from page');
+          t.done();
+        }
+      }));
   }, 'A worker is same origin with its opaque origin creator');
+async_test(function(t) {
+    self.addEventListener('message', t.step_func(function(e) {
+        if (e.source == window[1]) {
+          assert_equals(e.data, 3);
+          t.done();
+        }
+      }));
+  }, 'Shared workers work in opaque origins');
 </script>
-<iframe sandbox="allow-scripts" src="resources/sandboxed.html"></iframe>
+<iframe id='fetch' sandbox="allow-scripts" src="resources/sandboxed.html"></iframe>
+<iframe id='sharedworker' sandbox="allow-scripts" src="resources/sandboxed-shared-worker.html"></iframe>
 </body>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<script>
+const b = new Blob([
+  'let count = 1;',
+  'onconnect = function(e) {',
+    'e.source.postMessage(count++);',
+  '};'
+]);
+const url = URL.createObjectURL(b);
+
+let replyCount = 0;
+let replies = 0;
+let handler = function(e) {
+  replies += e.data;
+  replyCount++;
+  if (replyCount == 2)
+    parent.postMessage(replies, '*');
+};
+
+const worker = new SharedWorker(url);
+worker.port.onmessage = handler;
+const worker2 = new SharedWorker(url);
+worker2.port.onmessage = handler;
+</script>
